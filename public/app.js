@@ -111,7 +111,7 @@ form.addEventListener('submit', async function (event) {
     const formData = new FormData(form);
 
     try {
-        const response = await fetch('../process_form.php', {
+        const response = await fetch('/users', {
             method: 'POST',
             body: formData
         });

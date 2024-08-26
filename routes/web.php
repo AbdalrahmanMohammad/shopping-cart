@@ -18,9 +18,8 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/h', function () {
-    return "hello";
-});
 
 
 Route::post('/distinct-cities', [UserController::class, 'getDistinctCities']);
+
+Route::match(['get', 'post'], '/users', [UserController::class, 'handleRequest']);
