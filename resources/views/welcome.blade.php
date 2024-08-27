@@ -9,50 +9,71 @@
 </head>
 
 <body>
-    <header>postgreSQL</header>
-    <main>
-        <form action="../process_form.php" method="POST" id="myForm">
+    <header>
+        <span>orders</span>
+        <span>shopping cart</span>
+        <span>cart</span>
+    </header>
+    <div class="items">
+        <div class="item">
+            <div class="name">Laptop</div>
+            <span class="price">$999</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+        <div class="item">
+            <div class="name">Smartphone</div>
+            <span class="price">$499</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+        <div class="item">
+            <div class="name">Headphones</div>
+            <span class="price">$199</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+        <div class="item">
+            <div class="name">Smartwatch</div>
+            <span class="price">$249</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+        <div class="item">
+            <div class="name">Tablet</div>
+            <span class="price">$349</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+        <div class="item">
+            <div class="name">Camera</div>
+            <span class="price">$799</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+        <div class="item">
+            <div class="name">Keyboard</div>
+            <span class="price">$89</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+        <div class="item">
+            <div class="name">Mouse</div>
+            <span class="price">$49</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+        <div class="item">
+            <div class="name">Monitor</div>
+            <span class="price">$299</span>
+            <input type="number" min="0" value="1">
+            <button>Add</button>
+        </div>
+    </div>
 
-            <div class="operations">
-                <label for="menu">Choose the operation:</label>
-                <select id="menu" name="operation">
-                    <option value="insert">insert</option>
-                    <option value="select">select</option>
-                    <option value="update">update</option>
-                    <option value="delete">delete</option>
-                </select>
-            </div>
+    <div class="cart">
 
-            <div class="text">
-                <input name="id" type="text" id="id" placeholder="ID">
-                <input name="name" type="text" id="name" placeholder="Name">
-                <input name="address" type="text" id="address" placeholder="Address">
-            </div>
-
-            <div class="update">
-                <input name="new-name" type="text" id="new-name" placeholder="New Name">
-                <input name="new-address" type="text" id="new-address" placeholder="New Address">
-            </div>
-
-            <select id="cities" name="address">
-            </select>
-
-            <input type="submit" value="Submit">
-        </form>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-
-    </main>
+    </div>
 
     <script src="app.js"></script>
 </body>

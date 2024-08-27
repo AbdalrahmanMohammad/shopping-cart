@@ -1,7 +1,6 @@
-let inputs = document.querySelectorAll("form input:not([type='submit']),#cities");
-let operation = document.querySelector("select#menu");
-let form = document.querySelector("form");
-let table = document.querySelector("table");
+let items = document.querySelector(".items");
+let cartDiv=document.querySelector(".cart");
+let cartSpan=document.querySelector("header span:last-child");
 
 const postData = async (url = '', data) => {
     // console.log(data)
@@ -22,142 +21,135 @@ const postData = async (url = '', data) => {
     }
 }
 
-operation.addEventListener('change', function (event) {
-    // Get the selected value from the event
-    controlInputs(event.target.value);
-});
 
-// Function to control inputs based on the selected value
-async function controlInputs(selectedValue) {
-    // Disable and hide all inputs
-    inputs.forEach(input => {
-        input.value = "";
-        disableAndHide(input);
-    });
 
-    // Enable and show specific inputs based on the selected value
-    if (selectedValue === "select") {
-        let result;
+let cart = {};
 
-        try {
-            result = await postData('/distinct-cities', {});
-            console.log('Server response:', result);
-        } catch (error) {
-            console.error('Error sending SQL statement:', error);
+items.addEventListener('click', function (e) {
+    if (e.target.tagName === 'BUTTON') {
+        // Get the parent .item element
+        let itemElement = e.target.parentElement;
+
+        // Find the name, price, and quantity elements within the .item
+        let name = itemElement.querySelector('.name').textContent;
+        let price = itemElement.querySelector('.price').textContent;
+        let quantity = parseInt(itemElement.querySelector('input').value, 10);
+
+        // Remove the dollar sign and convert price to numeric
+        if (price[0] === "$") {
+            price = parseFloat(price.replace('$', ''));
         }
 
-        inputs.forEach(input => {
-            if (input.id === "name" || input.id === "cities") {
-                enableAndShow(input);
+        // Check if quantity is greater than 0
+        if (quantity > 0) {
+            // Save item details into the cart
+            if (cart[name]) {
+                // Update existing item in the cart
+                cart[name].quantity += quantity;
+                cart[name].price += price * quantity;
+            } else {
+                // Add new item to the cart
+                cart[name] = {
+                    price: price * quantity,
+                    quantity: quantity
+                };
             }
-        });
+        }
 
-        let citiesSelect = document.querySelector("#cities");
-        citiesSelect.innerHTML = `<option value="">All cities</option>`;
-        result.forEach(item => {
-            const option = document.createElement("option");
-            option.textContent = item.address;
-            option.value = item.address;
-            citiesSelect.appendChild(option);
-        });
-    } else if (selectedValue === "delete") {
-        inputs.forEach(input => {
-            if (input.id === "name" || input.id === "id" || input.id === "address") {
-                enableAndShow(input);
-            }
-        });
-    } else if (selectedValue === "update") {
-        inputs.forEach(input => {
-            if (input.id === "name" || input.id === "id" || input.id === "address" || input.id === "new-name" || input.id === "new-address") {
-                enableAndShow(input);
-            }
-        });
-    } else if (selectedValue === "insert") {
-        inputs.forEach(input => {
-            if (input.id === "name" || input.id === "address") {
-                enableAndShow(input);
-            }
-        });
+        updateCartDisplay();
+    }
+});
+
+
+// Function to update the cart display
+function updateCartDisplay() {
+    console.log(cart);
+    // Get the cart div element
+    const cartElement = document.querySelector('.cart');
+
+    // Clear existing content
+    cartElement.innerHTML = '';
+
+    // Check if the cart is empty
+    if (Object.keys(cart).length === 0) {
+        cartElement.innerHTML = '<p>Your cart is empty.</p>';
+        return;
     }
 
-    // console.log('Selected value:', selectedValue);
-}
+    // Create a list to display cart items
+    const list = document.createElement('ul');
+    // Iterate over cart items and create list items
+    for (const [name, { price, quantity }] of Object.entries(cart)) {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<div><span>${name}</span>: 
+                            <span>$${price * quantity}<span>
+                            <span> for </span> 
+                            <span>${quantity}</span>
+                            <span> items</span></div>`;
 
-controlInputs("insert");// choose insert the the page load ( the default chicked option )
+        const buttons = document.createElement('div');
 
-function disableAndHide(element) {
-    if (element) {
-        element.disabled = true;
-        element.style.display = 'none';
-    } else {
-        console.error('Element not found or invalid');
+        // Create and append the + button
+        const addButton = document.createElement('button');
+        addButton.textContent = '+';
+        addButton.dataset.name = name;
+        buttons.appendChild(addButton);
+
+        // Create and append the - button
+        const subtractButton = document.createElement('button');
+        subtractButton.textContent = '-';
+        subtractButton.dataset.name = name;
+        buttons.appendChild(subtractButton);
+
+
+
+        listItem.appendChild(buttons);
+
+        // Append the list item to the list
+        list.appendChild(listItem);
     }
-}
-function enableAndShow(element) {
-    if (element) {
-        element.disabled = false;
-        element.style.display = '';
-    } else {
-        console.error('Element not found or invalid');
-    }
+
+    // Append the list to the cart div
+    cartElement.appendChild(list);
+
+    // Add event listeners for + and - buttons
+
 }
 
+document.querySelector(".cart").addEventListener('click', function (e) {
+    if (e.target.tagName === 'BUTTON') {
+        const itemName = e.target.dataset.name;
 
-// Add an event listener to the form element
-form.addEventListener('submit', async function (event) {
-    event.preventDefault();
-
-    // Create a FormData object from the form element
-    const formData = new FormData(form);
-
-    try {
-        const response = await fetch('/users', {
-            method: 'POST',
-            body: formData
-        });
-        if (response.ok) {
-            const result = await response.text();
-                showInTable(JSON.parse(result))
+        if (e.target.textContent === '+') {
+            cart[itemName].quantity += 1;
         } else {
-            console.error('Server error:', response.statusText);
+            if (cart[itemName].quantity > 0) {
+                cart[itemName].quantity -= 1;
+            }
         }
-    } catch (error) {
-        console.error('Error:', error);
+
+        // Remove item from cart if quantity is 0
+        if (cart[itemName].quantity === 0) {
+            delete cart[itemName];
+        }
+
+        // Update cart display
+        updateCartDisplay();
     }
-
-    console.log(operation.value);
-
 });
 
-function showInTable(values) {
-    const tbody = document.querySelector('table tbody');
-
-    // Clear existing rows
-    tbody.innerHTML = '';
-
-    // Check if values is an array and has elements
-    if (Array.isArray(values) && values.length > 0) {
-        values.forEach(row => {
-            // Create a new row
-            const tr = document.createElement('tr');
-
-            // Create and append cells
-            const idCell = document.createElement('td');
-            idCell.textContent = row.id || '';
-            tr.appendChild(idCell);
-
-            const nameCell = document.createElement('td');
-            nameCell.textContent = row.name || '';
-            tr.appendChild(nameCell);
-
-            const addressCell = document.createElement('td');
-            addressCell.textContent = row.address || '';
-            tr.appendChild(addressCell);
-
-            // Append the row to the table body
-            tbody.appendChild(tr);
-        });
-    } else {
-        console.log('No data available or data format is incorrect.');
-    }
+function showHide() {// function to show and hide cart
+    if (cartDiv.style.display == "block")
+    cartDiv.style.display = "none";
+    else
+    cartDiv.style.display = "block";
 }
+
+document.querySelector("body").addEventListener("click", handleBodyClick);
+
+function handleBodyClick(e) {
+    if(e.target.tagName!="BUTTON")
+    if (e.target == cartSpan || cartDiv.style.display === "block" && !cartDiv.contains(e.target)) {
+        showHide();
+    }
+};
