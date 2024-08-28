@@ -1,6 +1,8 @@
 let items = document.querySelector(".items");
 let cartDiv = document.querySelector(".cart");
 let cartSpan = document.querySelector("header span:last-child");
+let addItemDiv = document.querySelector(".new-item");
+let addItemSpan = document.querySelector(".add-item button");
 
 const postData = async (url = '', data) => {
     // console.log(data)
@@ -10,7 +12,7 @@ const postData = async (url = '', data) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: (data), // body data type must match "Content-Type" header        
+        body: JSON.stringify(data), // body data type must match "Content-Type" header        
     });
 
     try {
@@ -136,11 +138,12 @@ document.querySelector(".cart").addEventListener('click', function (e) {// add o
     }
 });
 
-function showHide() {// function to show and hide cart
-    if (cartDiv.style.display == "block")
-        cartDiv.style.display = "none";
+function showHide(item) {// function to show and hide cart
+    let type = (item == addItemDiv) ? "flex" : "block";
+    if (item.style.display == type)
+        item.style.display = "none";
     else
-        cartDiv.style.display = "block";
+        item.style.display = type;
 }
 
 document.querySelector("body").addEventListener("click", handleBodyClick);
@@ -148,8 +151,11 @@ document.querySelector("body").addEventListener("click", handleBodyClick);
 function handleBodyClick(e) {// to control showHide function
     if (e.target.tagName != "BUTTON")
         if (e.target == cartSpan || cartDiv.style.display === "block" && !cartDiv.contains(e.target)) {
-            showHide();
+            showHide(cartDiv);
         }
+    if (e.target == addItemSpan || addItemDiv.style.display === "flex" && !addItemDiv.contains(e.target)) {
+        showHide(addItemDiv);
+    }
 };
 
 const getItemsFromDB = async () => {// get he produtcts from data base and show them 
@@ -177,3 +183,15 @@ const getItemsFromDB = async () => {// get he produtcts from data base and show 
     }
 };
 getItemsFromDB();
+
+document.querySelector(".new-item button").addEventListener("click", async () => {
+    let name = document.querySelector(".new-item #item-name").value;
+    let price = document.querySelector(".new-item #item-price").value;
+    try {
+        const data = await postData("/addproduct", { "name": name, "price": price });
+        getItemsFromDB();
+    }
+    catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+})

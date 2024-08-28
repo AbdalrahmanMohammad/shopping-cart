@@ -85,3 +85,47 @@ header span:not(:nth-child(2)) {
     display: flex;
     justify-content: space-between;
 }
+
+.add-item{
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+.add-item button{
+    font-size: 25px;
+    padding: 10px 20px;
+    outline: none;
+    cursor: pointer;
+}
+.new-item {
+    position: fixed;
+    /* Keep the cart fixed on the screen */
+    top: 50%;
+    /* Center vertically */
+    left: 50%;
+    /* Center horizontally */
+    transform: translate(-50%, -50%);
+    /* Offset the position by half of its width and height */
+    background-color: rgb(192, 174, 151);
+    border: 1px solid #ccc;
+    /* Border around the cart (optional) */
+    padding: 20px;
+    /* Padding inside the cart (optional) */
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+    /* Shadow effect (optional) */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    font-size: 22px;
+    display: none;
+}
+.new-item input{
+    font-size: 22px;
+
+}
+.new-item button{
+    cursor: pointer;
+    font-size: 22px;
+}

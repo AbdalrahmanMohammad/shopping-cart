@@ -70,7 +70,15 @@
             <button>Add</button>
         </div> -->
     </div>
-
+    <div class="add-item">
+        <button>Add new item</button>
+    </div>
+    <div class="new-item">
+        <div class="title">Add new item</div>
+        <input type="text" id="item-name" placeholder="Name">
+        <input type="number" id="item-price" placeholder="Price">
+        <button id="add-the-item">Add</button>
+    </div>
     <div class="cart">
 
     </div>
