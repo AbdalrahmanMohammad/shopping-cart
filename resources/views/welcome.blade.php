@@ -15,7 +15,7 @@
         <span>cart</span>
     </header>
     <div class="items">
-        <div class="item">
+        <!-- <div class="item">
             <div class="name">Laptop</div>
             <span class="price">$999</span>
             <input type="number" min="0" value="1">
@@ -68,7 +68,7 @@
             <span class="price">$299</span>
             <input type="number" min="0" value="1">
             <button>Add</button>
-        </div>
+        </div> -->
     </div>
 
     <div class="cart">

@@ -1,6 +1,6 @@
 let items = document.querySelector(".items");
-let cartDiv=document.querySelector(".cart");
-let cartSpan=document.querySelector("header span:last-child");
+let cartDiv = document.querySelector(".cart");
+let cartSpan = document.querySelector("header span:last-child");
 
 const postData = async (url = '', data) => {
     // console.log(data)
@@ -21,11 +21,9 @@ const postData = async (url = '', data) => {
     }
 }
 
-
-
 let cart = {};
 
-items.addEventListener('click', function (e) {
+items.addEventListener('click', function (e) {// add item to shopping cart
     if (e.target.tagName === 'BUTTON') {
         // Get the parent .item element
         let itemElement = e.target.parentElement;
@@ -46,7 +44,7 @@ items.addEventListener('click', function (e) {
             if (cart[name]) {
                 // Update existing item in the cart
                 cart[name].quantity += quantity;
-                cart[name].price += price * quantity;
+                cart[name].price = price * quantity;
             } else {
                 // Add new item to the cart
                 cart[name] = {
@@ -61,8 +59,8 @@ items.addEventListener('click', function (e) {
 });
 
 
-// Function to update the cart display
-function updateCartDisplay() {
+
+function updateCartDisplay() {// Function to update the cart display
     console.log(cart);
     // Get the cart div element
     const cartElement = document.querySelector('.cart');
@@ -116,7 +114,7 @@ function updateCartDisplay() {
 
 }
 
-document.querySelector(".cart").addEventListener('click', function (e) {
+document.querySelector(".cart").addEventListener('click', function (e) {// add or subtract items in the cart
     if (e.target.tagName === 'BUTTON') {
         const itemName = e.target.dataset.name;
 
@@ -140,16 +138,42 @@ document.querySelector(".cart").addEventListener('click', function (e) {
 
 function showHide() {// function to show and hide cart
     if (cartDiv.style.display == "block")
-    cartDiv.style.display = "none";
+        cartDiv.style.display = "none";
     else
-    cartDiv.style.display = "block";
+        cartDiv.style.display = "block";
 }
 
 document.querySelector("body").addEventListener("click", handleBodyClick);
 
-function handleBodyClick(e) {
-    if(e.target.tagName!="BUTTON")
-    if (e.target == cartSpan || cartDiv.style.display === "block" && !cartDiv.contains(e.target)) {
-        showHide();
+function handleBodyClick(e) {// to control showHide function
+    if (e.target.tagName != "BUTTON")
+        if (e.target == cartSpan || cartDiv.style.display === "block" && !cartDiv.contains(e.target)) {
+            showHide();
+        }
+};
+
+const getItemsFromDB = async () => {// get he produtcts from data base and show them 
+    const url = '/getproducts';
+
+    try {
+        const data = await postData(url, {});
+
+        if (Array.isArray(data)) {
+            items.innerHTML = "";
+            for (const product of data) {
+                const { name, price } = product;
+                items.innerHTML += ` <div class="item">
+                <div class="name">${name}</div>
+                <span class="price">$${price}</span>
+                <input type="number" min="0" value="1">
+                <button>Add</button>
+            </div>`;
+            }
+        } else {
+            console.error('Data is not an array:', data);
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
     }
 };
+getItemsFromDB();
