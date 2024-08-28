@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
+
 
 
 /*
@@ -20,6 +22,6 @@ Route::get('/', function () {
 });
 
 
-Route::post('/distinct-cities', [UserController::class, 'getDistinctCities']);
 
-Route::match(['get', 'post'], '/users', [UserController::class, 'handleRequest']);
+Route::post('/getproducts', [ProductController::class, 'getProducts']);
+Route::post('/addproduct', [ProductController::class, 'addProduct']);
