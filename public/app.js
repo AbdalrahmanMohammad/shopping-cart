@@ -46,7 +46,7 @@ items.addEventListener('click', function (e) {// add item to shopping cart
             if (cart[name]) {
                 // Update existing item in the cart
                 cart[name].quantity += quantity;
-                cart[name].price = price * quantity;
+                cart[name].price = price ;
             } else {
                 // Add new item to the cart
                 cart[name] = {
