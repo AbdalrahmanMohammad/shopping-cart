@@ -25,6 +25,9 @@ Route::get('/', function () {
 
 Route::post('/getproducts', [ProductController::class, 'getProducts']);
 Route::post('/addproduct', [ProductController::class, 'addProduct']);
+Route::post('/deleteproduct', [ProductController::class, 'deleteProduct']);
+
 
 Route::post('/addorder', [OrderController::class, 'store']); // Route to store an order
 Route::post('/orders', [OrderController::class, 'index']); // Route to get all orders
+

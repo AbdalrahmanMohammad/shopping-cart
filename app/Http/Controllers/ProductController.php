@@ -30,4 +30,20 @@ class ProductController extends Controller
         // Return the created product as a JSON response
         return response()->json($product, 201);
     }
+
+    public function deleteProduct(Request $request)
+    {
+        // Validate the incoming request data
+        $validated = $request->validate([
+            'name' => 'required|string|exists:products,name', // Ensure 'name' exists in products table
+        ]);
+
+        // Find and delete the product by name
+        $product = Product::where('name', $validated['name'])->first();
+
+        // Delete the product and return a response
+        $product->delete();
+
+        return response()->json(['message' => 'Product deleted successfully'], 200);
+    }
 }

@@ -30,7 +30,7 @@ const postData = async (url = '', data) => {
 
 let cart = {};
 
-items.addEventListener('click', function (e) {// add item to shopping cart
+items.addEventListener('click', async function (e) {// add item to shopping cart
     if (e.target.tagName === 'BUTTON') {
         // Get the parent .item element
         let itemElement = e.target.parentElement;
@@ -62,6 +62,11 @@ items.addEventListener('click', function (e) {// add item to shopping cart
         }
 
         updateCartDisplay();
+    }
+    if (e.target.classList.contains("x")) {
+        let name = e.target.nextElementSibling.textContent;
+        const data = await postData("/deleteproduct", { name: name });
+        getItemsFromDB();
     }
 });
 
@@ -134,9 +139,8 @@ function updateCartDisplay() {// Function to update the cart display
     document.querySelector("#submit-order").addEventListener("click", async () => {
         console.log(orderObject);
         const data = await postData("/addorder", orderObject);
-
-
     })
+
     // Add event listeners for + and - buttons
 
 }
@@ -198,6 +202,7 @@ const getItemsFromDB = async () => {// get he produtcts from data base and show 
             for (const product of data) {
                 const { name, price } = product;
                 items.innerHTML += ` <div class="item">
+                <div class="x">X</div>
                 <div class="name">${name}</div>
                 <span class="price">$${price}</span>
                 <input type="number" min="0" value="1">
