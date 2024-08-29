@@ -4,6 +4,10 @@ let cartSpan = document.querySelector("header span:last-child");
 let addItemDiv = document.querySelector(".new-item");
 let addItemSpan = document.querySelector(".add-item button");
 let orderObject = {};
+let orderSpan = document.querySelector("header span:first-child");
+let orderDiv = document.querySelector(".orders");
+
+
 
 const postData = async (url = '', data) => {
     // console.log(data)
@@ -177,6 +181,10 @@ function handleBodyClick(e) {// to control showHide function
     if (e.target == addItemSpan || addItemDiv.style.display === "flex" && !addItemDiv.contains(e.target)) {
         showHide(addItemDiv);
     }
+    if (e.target == orderSpan || orderDiv.style.display === "block" && !orderDiv.contains(e.target)) {
+        showHide(orderDiv);
+    }
+
 };
 
 const getItemsFromDB = async () => {// get he produtcts from data base and show them 
@@ -215,4 +223,45 @@ document.querySelector(".new-item button").addEventListener("click", async () =>
     catch (error) {
         console.error('There was a problem with the fetch operation:', error);
     }
+})
+
+// Function to update the HTML with the fetched orders
+const displayOrders = (orders) => {
+    const ordersDiv = document.querySelector('.orders');
+
+    // Clear existing content
+    ordersDiv.innerHTML = '';
+
+    orders.forEach(order => {
+        const orderElement = document.createElement('div');
+        orderElement.classList.add('order');
+
+        // Create a string with order details
+        let orderHTML = `<h3>Order ID: ${order.id}</h3>`;
+        orderHTML += `<p>Total: ${order.total}</p>`;
+        orderHTML += '<ul>';
+
+        // Add order products
+        order.order_products.forEach(product => {
+            orderHTML += `
+                <li>
+                    Product: ${product.productname}, 
+                    Quantity: ${product.quantity}, 
+                    Price: ${product.price}
+                </li>
+            `;
+        });
+
+        orderHTML += '</ul>';
+
+        // Append the order details to the ordersDiv
+        orderElement.innerHTML = orderHTML;
+        ordersDiv.appendChild(orderElement);
+    });
+};
+
+orderSpan.addEventListener("click", async () => {
+    const orders = await postData("/orders", {});
+
+    displayOrders(orders);
 })

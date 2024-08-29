@@ -27,6 +27,7 @@
     </div>
     <div class="cart">
     </div>
+    <div class="orders"></div>
 
     <script src="app.js"></script>
 </body>

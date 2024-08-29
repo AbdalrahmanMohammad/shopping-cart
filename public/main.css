@@ -151,3 +151,69 @@ header span:not(:nth-child(2)) {
 .cart h2{
     text-align: center;
 }
+
+/* Basic styling for the orders container */
+.orders {
+    position: fixed;
+    /* Keep the cart fixed on the screen */
+    top: 50%;
+    /* Center vertically */
+    left: 50%;
+    /* Center horizontally */
+    transform: translate(-50%, -50%);
+    /* Offset the position by half of its width and height */
+    background-color: rgb(192, 174, 151);
+    border: 1px solid #ccc;
+    /* Border around the cart (optional) */
+    padding: 20px;
+    /* Padding inside the cart (optional) */
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+    /* Shadow effect (optional) */
+    z-index: 1000;
+    /* Ensure it appears above other content */
+    width: 80%;
+    display: none;
+    max-height: 80%;
+    overflow: auto;
+}
+
+/* Style for individual order blocks */
+.order {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Style for order headings */
+.order h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+/* Style for order details */
+.order p {
+    font-size: 1em;
+    color: #666;
+}
+
+/* Style for the list of products */
+.order ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Style for individual product list items */
+.order ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    color: #444;
+}
+
+/* Remove bottom border from the last product */
+.order ul li:last-child {
+    border-bottom: none;
+}
