@@ -15,60 +15,6 @@
         <span>cart</span>
     </header>
     <div class="items">
-        <!-- <div class="item">
-            <div class="name">Laptop</div>
-            <span class="price">$999</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div>
-        <div class="item">
-            <div class="name">Smartphone</div>
-            <span class="price">$499</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div>
-        <div class="item">
-            <div class="name">Headphones</div>
-            <span class="price">$199</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div>
-        <div class="item">
-            <div class="name">Smartwatch</div>
-            <span class="price">$249</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div>
-        <div class="item">
-            <div class="name">Tablet</div>
-            <span class="price">$349</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div>
-        <div class="item">
-            <div class="name">Camera</div>
-            <span class="price">$799</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div>
-        <div class="item">
-            <div class="name">Keyboard</div>
-            <span class="price">$89</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div>
-        <div class="item">
-            <div class="name">Mouse</div>
-            <span class="price">$49</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div>
-        <div class="item">
-            <div class="name">Monitor</div>
-            <span class="price">$299</span>
-            <input type="number" min="0" value="1">
-            <button>Add</button>
-        </div> -->
     </div>
     <div class="add-item">
         <button>Add new item</button>
@@ -80,7 +26,6 @@
         <button id="add-the-item">Add</button>
     </div>
     <div class="cart">
-
     </div>
 
     <script src="app.js"></script>

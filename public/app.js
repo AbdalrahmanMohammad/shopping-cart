@@ -3,6 +3,7 @@ let cartDiv = document.querySelector(".cart");
 let cartSpan = document.querySelector("header span:last-child");
 let addItemDiv = document.querySelector(".new-item");
 let addItemSpan = document.querySelector(".add-item button");
+let orderObject = {};
 
 const postData = async (url = '', data) => {
     // console.log(data)
@@ -46,7 +47,7 @@ items.addEventListener('click', function (e) {// add item to shopping cart
             if (cart[name]) {
                 // Update existing item in the cart
                 cart[name].quantity += quantity;
-                cart[name].price = price ;
+                cart[name].price = price;
             } else {
                 // Add new item to the cart
                 cart[name] = {
@@ -64,6 +65,7 @@ items.addEventListener('click', function (e) {// add item to shopping cart
 
 function updateCartDisplay() {// Function to update the cart display
     console.log(cart);
+    let total = 0;
     // Get the cart div element
     const cartElement = document.querySelector('.cart');
 
@@ -88,6 +90,7 @@ function updateCartDisplay() {// Function to update the cart display
                             <span> items</span></div>`;
 
         const buttons = document.createElement('div');
+        total += price * quantity;
 
         // Create and append the + button
         const addButton = document.createElement('button');
@@ -111,7 +114,25 @@ function updateCartDisplay() {// Function to update the cart display
 
     // Append the list to the cart div
     cartElement.appendChild(list);
+    cartElement.innerHTML += `  <h2>total: ${total}</h2>      <div id="submit-order">submit order</div>    `;
 
+    orderObject = Object.keys(cart).map(key => {
+        return {
+            productname: key,
+            quantity: cart[key].quantity,
+            price: cart[key].price
+        };
+    });
+    orderObject = {
+        "total": total,
+        "products": orderObject
+    }
+    document.querySelector("#submit-order").addEventListener("click", async () => {
+        console.log(orderObject);
+        const data = await postData("/addorder", orderObject);
+
+
+    })
     // Add event listeners for + and - buttons
 
 }
