@@ -1,7 +1,13 @@
-let inputs = document.querySelectorAll("form input:not([type='submit']),#cities");
-let operation = document.querySelector("select#menu");
-let form = document.querySelector("form");
-let table = document.querySelector("table");
+let items = document.querySelector(".items");
+let cartDiv = document.querySelector(".cart");
+let cartSpan = document.querySelector("header span:last-child");
+let addItemDiv = document.querySelector(".new-item");
+let addItemSpan = document.querySelector(".add-item button");
+let orderObject = {};
+let orderSpan = document.querySelector("header span:first-child");
+let orderDiv = document.querySelector(".orders");
+
+
 
 const postData = async (url = '', data) => {
     // console.log(data)
@@ -11,7 +17,7 @@ const postData = async (url = '', data) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: (data), // body data type must match "Content-Type" header        
+        body: JSON.stringify(data), // body data type must match "Content-Type" header        
     });
 
     try {
@@ -22,142 +28,245 @@ const postData = async (url = '', data) => {
     }
 }
 
-operation.addEventListener('change', function (event) {
-    // Get the selected value from the event
-    controlInputs(event.target.value);
-});
+let cart = {};
 
-// Function to control inputs based on the selected value
-async function controlInputs(selectedValue) {
-    // Disable and hide all inputs
-    inputs.forEach(input => {
-        input.value = "";
-        disableAndHide(input);
-    });
+items.addEventListener('click', async function (e) {// add item to shopping cart
+    if (e.target.tagName === 'BUTTON') {
+        // Get the parent .item element
+        let itemElement = e.target.parentElement;
 
-    // Enable and show specific inputs based on the selected value
-    if (selectedValue === "select") {
-        let result;
+        // Find the name, price, and quantity elements within the .item
+        let name = itemElement.querySelector('.name').textContent;
+        let price = itemElement.querySelector('.price').textContent;
+        let quantity = parseInt(itemElement.querySelector('input').value, 10);
 
-        try {
-            result = await postData('/distinct-cities', {});
-            console.log('Server response:', result);
-        } catch (error) {
-            console.error('Error sending SQL statement:', error);
+        // Remove the dollar sign and convert price to numeric
+        if (price[0] === "$") {
+            price = parseFloat(price.replace('$', ''));
         }
 
-        inputs.forEach(input => {
-            if (input.id === "name" || input.id === "cities") {
-                enableAndShow(input);
+        // Check if quantity is greater than 0
+        if (quantity > 0) {
+            // Save item details into the cart
+            if (cart[name]) {
+                // Update existing item in the cart
+                cart[name].quantity += quantity;
+                cart[name].price = price;
+            } else {
+                // Add new item to the cart
+                cart[name] = {
+                    price: price * quantity,
+                    quantity: quantity
+                };
             }
-        });
+        }
 
-        let citiesSelect = document.querySelector("#cities");
-        citiesSelect.innerHTML = `<option value="">All cities</option>`;
-        result.forEach(item => {
-            const option = document.createElement("option");
-            option.textContent = item.address;
-            option.value = item.address;
-            citiesSelect.appendChild(option);
-        });
-    } else if (selectedValue === "delete") {
-        inputs.forEach(input => {
-            if (input.id === "name" || input.id === "id" || input.id === "address") {
-                enableAndShow(input);
-            }
-        });
-    } else if (selectedValue === "update") {
-        inputs.forEach(input => {
-            if (input.id === "name" || input.id === "id" || input.id === "address" || input.id === "new-name" || input.id === "new-address") {
-                enableAndShow(input);
-            }
-        });
-    } else if (selectedValue === "insert") {
-        inputs.forEach(input => {
-            if (input.id === "name" || input.id === "address") {
-                enableAndShow(input);
-            }
-        });
+        updateCartDisplay();
+    }
+    if (e.target.classList.contains("x")) {
+        let name = e.target.nextElementSibling.textContent;
+        const data = await postData("/deleteproduct", { name: name });
+        getItemsFromDB();
+    }
+});
+
+
+
+function updateCartDisplay() {// Function to update the cart display
+    console.log(cart);
+    let total = 0;
+    // Get the cart div element
+    const cartElement = document.querySelector('.cart');
+
+    // Clear existing content
+    cartElement.innerHTML = '';
+
+    // Check if the cart is empty
+    if (Object.keys(cart).length === 0) {
+        cartElement.innerHTML = '<p>Your cart is empty.</p>';
+        return;
     }
 
-    // console.log('Selected value:', selectedValue);
-}
+    // Create a list to display cart items
+    const list = document.createElement('ul');
+    // Iterate over cart items and create list items
+    for (const [name, { price, quantity }] of Object.entries(cart)) {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<div><span>${name}</span>: 
+                            <span>$${price * quantity}<span>
+                            <span> for </span> 
+                            <span>${quantity}</span>
+                            <span> items</span></div>`;
 
-controlInputs("insert");// choose insert the the page load ( the default chicked option )
+        const buttons = document.createElement('div');
+        total += price * quantity;
 
-function disableAndHide(element) {
-    if (element) {
-        element.disabled = true;
-        element.style.display = 'none';
-    } else {
-        console.error('Element not found or invalid');
+        // Create and append the + button
+        const addButton = document.createElement('button');
+        addButton.textContent = '+';
+        addButton.dataset.name = name;
+        buttons.appendChild(addButton);
+
+        // Create and append the - button
+        const subtractButton = document.createElement('button');
+        subtractButton.textContent = '-';
+        subtractButton.dataset.name = name;
+        buttons.appendChild(subtractButton);
+
+
+
+        listItem.appendChild(buttons);
+
+        // Append the list item to the list
+        list.appendChild(listItem);
     }
-}
-function enableAndShow(element) {
-    if (element) {
-        element.disabled = false;
-        element.style.display = '';
-    } else {
-        console.error('Element not found or invalid');
+
+    // Append the list to the cart div
+    cartElement.appendChild(list);
+    cartElement.innerHTML += `  <h2>total: ${total}</h2>      <div id="submit-order">submit order</div>    `;
+
+    orderObject = Object.keys(cart).map(key => {
+        return {
+            productname: key,
+            quantity: cart[key].quantity,
+            price: cart[key].price
+        };
+    });
+    orderObject = {
+        "total": total,
+        "products": orderObject
     }
+    document.querySelector("#submit-order").addEventListener("click", async () => {
+        console.log(orderObject);
+        const data = await postData("/addorder", orderObject);
+    })
+
+    // Add event listeners for + and - buttons
+
 }
 
+document.querySelector(".cart").addEventListener('click', function (e) {// add or subtract items in the cart
+    if (e.target.tagName === 'BUTTON') {
+        const itemName = e.target.dataset.name;
 
-// Add an event listener to the form element
-form.addEventListener('submit', async function (event) {
-    event.preventDefault();
+        if (e.target.textContent === '+') {
+            cart[itemName].quantity += 1;
+        } else {
+            if (cart[itemName].quantity > 0) {
+                cart[itemName].quantity -= 1;
+            }
+        }
 
-    // Create a FormData object from the form element
-    const formData = new FormData(form);
+        // Remove item from cart if quantity is 0
+        if (cart[itemName].quantity === 0) {
+            delete cart[itemName];
+        }
+
+        // Update cart display
+        updateCartDisplay();
+    }
+});
+
+function showHide(item) {// function to show and hide cart
+    let type = (item == addItemDiv) ? "flex" : "block";
+    if (item.style.display == type)
+        item.style.display = "none";
+    else
+        item.style.display = type;
+}
+
+document.querySelector("body").addEventListener("click", handleBodyClick);
+
+function handleBodyClick(e) {// to control showHide function
+    if (e.target.tagName != "BUTTON")
+        if (e.target == cartSpan || cartDiv.style.display === "block" && !cartDiv.contains(e.target)) {
+            showHide(cartDiv);
+        }
+    if (e.target == addItemSpan || addItemDiv.style.display === "flex" && !addItemDiv.contains(e.target)) {
+        showHide(addItemDiv);
+    }
+    if (e.target == orderSpan || orderDiv.style.display === "block" && !orderDiv.contains(e.target)) {
+        showHide(orderDiv);
+    }
+
+};
+
+const getItemsFromDB = async () => {// get he produtcts from data base and show them 
+    const url = '/getproducts';
 
     try {
-        const response = await fetch('/users', {
-            method: 'POST',
-            body: formData
-        });
-        if (response.ok) {
-            const result = await response.text();
-                showInTable(JSON.parse(result))
+        const data = await postData(url, {});
+
+        if (Array.isArray(data)) {
+            items.innerHTML = "";
+            for (const product of data) {
+                const { name, price } = product;
+                items.innerHTML += ` <div class="item">
+                <div class="x">X</div>
+                <div class="name">${name}</div>
+                <span class="price">$${price}</span>
+                <input type="number" min="0" value="1">
+                <button>Add</button>
+            </div>`;
+            }
         } else {
-            console.error('Server error:', response.statusText);
+            console.error('Data is not an array:', data);
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('There was a problem with the fetch operation:', error);
     }
+};
+getItemsFromDB();
 
-    console.log(operation.value);
+document.querySelector(".new-item button").addEventListener("click", async () => {
+    let name = document.querySelector(".new-item #item-name").value;
+    let price = document.querySelector(".new-item #item-price").value;
+    try {
+        const data = await postData("/addproduct", { "name": name, "price": price });
+        getItemsFromDB();
+    }
+    catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+})
 
-});
+// Function to update the HTML with the fetched orders
+const displayOrders = (orders) => {
+    const ordersDiv = document.querySelector('.orders');
 
-function showInTable(values) {
-    const tbody = document.querySelector('table tbody');
+    // Clear existing content
+    ordersDiv.innerHTML = '';
 
-    // Clear existing rows
-    tbody.innerHTML = '';
+    orders.forEach(order => {
+        const orderElement = document.createElement('div');
+        orderElement.classList.add('order');
 
-    // Check if values is an array and has elements
-    if (Array.isArray(values) && values.length > 0) {
-        values.forEach(row => {
-            // Create a new row
-            const tr = document.createElement('tr');
+        // Create a string with order details
+        let orderHTML = `<h3>Order ID: ${order.id}</h3>`;
+        orderHTML += `<p>Total: ${order.total}</p>`;
+        orderHTML += '<ul>';
 
-            // Create and append cells
-            const idCell = document.createElement('td');
-            idCell.textContent = row.id || '';
-            tr.appendChild(idCell);
-
-            const nameCell = document.createElement('td');
-            nameCell.textContent = row.name || '';
-            tr.appendChild(nameCell);
-
-            const addressCell = document.createElement('td');
-            addressCell.textContent = row.address || '';
-            tr.appendChild(addressCell);
-
-            // Append the row to the table body
-            tbody.appendChild(tr);
+        // Add order products
+        order.order_products.forEach(product => {
+            orderHTML += `
+                <li>
+                    Product: ${product.productname}, 
+                    Quantity: ${product.quantity}, 
+                    Price: ${product.price}
+                </li>
+            `;
         });
-    } else {
-        console.log('No data available or data format is incorrect.');
-    }
-}
+
+        orderHTML += '</ul>';
+
+        // Append the order details to the ordersDiv
+        orderElement.innerHTML = orderHTML;
+        ordersDiv.appendChild(orderElement);
+    });
+};
+
+orderSpan.addEventListener("click", async () => {
+    const orders = await postData("/orders", {});
+
+    displayOrders(orders);
+})

@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     min-height: 100vh;
     background-color: antiquewhite;
@@ -7,7 +11,7 @@ body {
 
 header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     font-size: 40px;
     font-weight: bold;
@@ -16,86 +20,212 @@ header {
     margin-bottom: 20px;
 }
 
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.operations {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.operations select {
-    background-color: blue;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 10px;
-    border-radius: 10px;
-    width: fit-content;
-    color: white;
-    margin: 20px 0;
-}
-
-form {
-    padding: 20px 0;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-}
-
-form input {
-    padding: 4px 10px;
-    color: white;
-    font-size: 18px;
-    background-color: blue;
-    border: 0;
-    outline: 0;
-    border-radius: 3px;
-
-    &::placeholder {
-        color:     rgb(255, 255, 255,80%)        ;
-    }
-}
-
-form select {
-    background-color: blue;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 10px;
-    width: fit-content;
-    color: white;
-    margin: 20px 0;
-}
-
-form input[type="submit"] {
+header span:not(:nth-child(2)) {
     cursor: pointer;
-    padding: 10px;
-    font-size: 22px;
-    border-radius: 20px;
-    &:hover{
-        background-color: rgb(34, 34, 197);
+
+    &:hover {
+        color: blue;
     }
 }
 
-table{
+.items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 10px 50px;
+    /* Optional: Adds spacing between items */
+}
+
+.item {
+    background-color: rgb(204, 178, 143);
+    height: 200px;
+    /* Fixed height, but can be adjusted as needed */
+    display: flex;
+    flex-direction: column;
+    font-size: 40px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 5px;
+    position: relative;
+}
+
+.item .x{
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    &:hover{
+        font-size: 18px;
+    }
+}
+
+.item button {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.cart {
+    position: fixed;
+    /* Keep the cart fixed on the screen */
+    top: 50%;
+    /* Center vertically */
+    left: 50%;
+    /* Center horizontally */
+    transform: translate(-50%, -50%);
+    /* Offset the position by half of its width and height */
+    background-color: rgb(192, 174, 151);
+    border: 1px solid #ccc;
+    /* Border around the cart (optional) */
+    padding: 20px;
+    /* Padding inside the cart (optional) */
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+    /* Shadow effect (optional) */
+    z-index: 1000;
+    /* Ensure it appears above other content */
     width: 80%;
+    display: none;
+}
+
+.cart ul {
+    padding: 20px 40px;
+    font-size: 25px;
+}
+
+.cart ul li {
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-item{
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+.add-item button{
+    font-size: 25px;
+    padding: 10px 20px;
+    outline: none;
+    cursor: pointer;
+}
+.new-item {
+    position: fixed;
+    /* Keep the cart fixed on the screen */
+    top: 50%;
+    /* Center vertically */
+    left: 50%;
+    /* Center horizontally */
+    transform: translate(-50%, -50%);
+    /* Offset the position by half of its width and height */
+    background-color: rgb(192, 174, 151);
+    border: 1px solid #ccc;
+    /* Border around the cart (optional) */
+    padding: 20px;
+    /* Padding inside the cart (optional) */
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+    /* Shadow effect (optional) */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    font-size: 22px;
+    display: none;
+}
+.new-item input{
+    font-size: 22px;
+
+}
+.new-item button{
+    cursor: pointer;
+    font-size: 22px;
+}
+#submit-order{
+    position: relative;
+    cursor: pointer;
+    font-size: 22px;
+    left: 50%;
+    width: fit-content;
+    top: -15px;
+    transform: translateX(-50%);
+    margin-top: 20px;
+    border: 1px solid black;
+    &:hover{
+        background-color: rgb(50, 50, 165);
+    }
+    &:active{
+        background-color: rgb(82, 82, 139);
+    }
+    padding: 5px 10px;
+    background-color: blue;
+}
+.cart h2{
     text-align: center;
-    margin-top: 30px;
 }
-table thead{
-    background-color: rgb(28, 99, 161);
+
+/* Basic styling for the orders container */
+.orders {
+    position: fixed;
+    /* Keep the cart fixed on the screen */
+    top: 50%;
+    /* Center vertically */
+    left: 50%;
+    /* Center horizontally */
+    transform: translate(-50%, -50%);
+    /* Offset the position by half of its width and height */
+    background-color: rgb(192, 174, 151);
+    border: 1px solid #ccc;
+    /* Border around the cart (optional) */
+    padding: 20px;
+    /* Padding inside the cart (optional) */
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+    /* Shadow effect (optional) */
+    z-index: 1000;
+    /* Ensure it appears above other content */
+    width: 80%;
+    display: none;
+    max-height: 80%;
+    overflow: auto;
 }
-table tbody tr:nth-child(2n){
-    background-color: rgb(28, 99, 161);
+
+/* Style for individual order blocks */
+.order {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
 }
-table tbody tr:nth-child(2n+1){
-    background-color: rgb(94, 139, 182);
+
+/* Style for order headings */
+.order h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+/* Style for order details */
+.order p {
+    font-size: 1em;
+    color: #666;
+}
+
+/* Style for the list of products */
+.order ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Style for individual product list items */
+.order ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    color: #444;
+}
+
+/* Remove bottom border from the last product */
+.order ul li:last-child {
+    border-bottom: none;
 }

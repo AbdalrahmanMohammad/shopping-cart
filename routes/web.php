@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
+
 
 
 /*
@@ -20,6 +22,12 @@ Route::get('/', function () {
 });
 
 
-Route::post('/distinct-cities', [UserController::class, 'getDistinctCities']);
 
-Route::match(['get', 'post'], '/users', [UserController::class, 'handleRequest']);
+Route::post('/getproducts', [ProductController::class, 'getProducts']);
+Route::post('/addproduct', [ProductController::class, 'addProduct']);
+Route::post('/deleteproduct', [ProductController::class, 'deleteProduct']);
+
+
+Route::post('/addorder', [OrderController::class, 'store']); // Route to store an order
+Route::post('/orders', [OrderController::class, 'index']); // Route to get all orders
+

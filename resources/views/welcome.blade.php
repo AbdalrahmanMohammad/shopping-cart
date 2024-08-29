@@ -4,55 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>postgreSQL</title>
+    <title>Shopping Cart</title>
     <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
-    <header>postgreSQL</header>
-    <main>
-        <form action="../process_form.php" method="POST" id="myForm">
-
-            <div class="operations">
-                <label for="menu">Choose the operation:</label>
-                <select id="menu" name="operation">
-                    <option value="insert">insert</option>
-                    <option value="select">select</option>
-                    <option value="update">update</option>
-                    <option value="delete">delete</option>
-                </select>
-            </div>
-
-            <div class="text">
-                <input name="id" type="text" id="id" placeholder="ID">
-                <input name="name" type="text" id="name" placeholder="Name">
-                <input name="address" type="text" id="address" placeholder="Address">
-            </div>
-
-            <div class="update">
-                <input name="new-name" type="text" id="new-name" placeholder="New Name">
-                <input name="new-address" type="text" id="new-address" placeholder="New Address">
-            </div>
-
-            <select id="cities" name="address">
-            </select>
-
-            <input type="submit" value="Submit">
-        </form>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-
-    </main>
+    <header>
+        <span>orders</span>
+        <span>shopping cart</span>
+        <span>cart</span>
+    </header>
+    <div class="items">
+    </div>
+    <div class="add-item">
+        <button>Add new item</button>
+    </div>
+    <div class="new-item">
+        <div class="title">Add new item</div>
+        <input type="text" id="item-name" placeholder="Name">
+        <input type="number" id="item-price" placeholder="Price">
+        <button id="add-the-item">Add</button>
+    </div>
+    <div class="cart">
+    </div>
+    <div class="orders"></div>
 
     <script src="app.js"></script>
 </body>
